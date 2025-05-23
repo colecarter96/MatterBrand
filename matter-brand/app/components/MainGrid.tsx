@@ -21,6 +21,14 @@ interface Tile {
   category: string | null;
 }
 
+interface LayoutItem {
+  i: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
 const getDefaultLayout = (numTiles: number, existingTiles: Tile[] = []): Tile[] => {
   // Total grid is 12 columns wide and 8 rows high
   const newTiles: Tile[] = [];
@@ -111,7 +119,7 @@ export default function MainGrid({ selectedCategory }: MainGridProps) {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [handleAddTile]);
+  }, [handleAddTile, numTiles]);
 
   useEffect(() => {
     if (isInitialLayout) {
@@ -119,7 +127,7 @@ export default function MainGrid({ selectedCategory }: MainGridProps) {
     }
   }, [numTiles, isInitialLayout]);
 
-  const handleLayoutChange = (layout: any) => {
+  const handleLayoutChange = (layout: LayoutItem[]) => {
     if (!isHandleMode) return;
     setIsInitialLayout(false);
     setTiles(prev => prev.map((tile, index) => ({
@@ -128,7 +136,7 @@ export default function MainGrid({ selectedCategory }: MainGridProps) {
     })));
   };
 
-  const handleDragStop = (layout: any, oldItem: any, newItem: any) => {
+  const handleDragStop = (layout: LayoutItem[], oldItem: LayoutItem, newItem: LayoutItem) => {
     if (!isHandleMode) return;
     if (selectedCategory) {
       setTiles(prev => prev.map(tile => 
@@ -274,8 +282,8 @@ export default function MainGrid({ selectedCategory }: MainGridProps) {
     <div className="flex-1 relative h-full">
       <div className="absolute bottom-4 right-4 z-10 flex items-center gap-2">
         <div className="text-sm text-accent">
-          Press 'H' to {isHandleMode ? 'disable' : 'enable'} drag mode
-          {numTiles < 5 && <span className="ml-2">• Press 'T' to add tile</span>}
+          Press &apos;H&apos; to {isHandleMode ? 'disable' : 'enable'} drag mode
+          {numTiles < 5 && <span className="ml-2">• Press &apos;T&apos; to add tile</span>}
         </div>
         <select
           value={numTiles}
